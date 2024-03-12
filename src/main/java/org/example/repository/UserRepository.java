@@ -64,7 +64,7 @@ public class UserRepository {
 
 
 class ConnectionManager implements AutoCloseable {
-    private final String URL = "jdbc:postgresql://localhost:5432/prometheus";
+    private final String URL = "jdbc:postgresql://10.0.2.2:5432/prometheus";
     private final String username = "postgres";
     private final String password = "mizazir";
 
