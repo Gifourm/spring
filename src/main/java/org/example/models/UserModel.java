@@ -40,10 +40,10 @@ public class UserModel {
     }
 
     public java.sql.Date getDate() {
-        try {
+        if (date != null) {
             return new java.sql.Date(date.getTime());
-        } catch (NullPointerException ex) {
-            throw new RuntimeException(ex);
+        } else {
+            throw new RuntimeException("Date is null");
         }
     }
 
