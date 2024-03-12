@@ -26,6 +26,8 @@ public class UserRepository {
                                 result.getDate("date"),
                                 result.getString("email"));
                     }
+                } finally {
+                    statement.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -36,8 +38,7 @@ public class UserRepository {
         }
     }
 
-    public int createUser(UserModel user)
-    {
+    public int createUser(UserModel user) {
         String usersQuery = """
                             INSERT INTO users(login, password, date)
                             VALUES(?, ?, ?);

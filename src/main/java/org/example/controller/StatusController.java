@@ -23,9 +23,13 @@ public class StatusController {
 
     @PostMapping("/api/v1/users")
     public ResponseEntity<?> createUser(@RequestBody UserModel user) {
-        if (user == null || StringUtils.isBlank(user.getLogin()) ||
-                StringUtils.isBlank(user.getPassword()) || StringUtils.isBlank(user.getEmail()) ||
-        user.getDate() == null) {
+        try {
+            if (user == null || StringUtils.isBlank(user.getLogin()) ||
+                    StringUtils.isBlank(user.getPassword()) || StringUtils.isBlank(user.getEmail()) ||
+                    user.getDate() == null) {
+                throw new RuntimeException("Invalid input data");
+            }
+        } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input data");
         }
         UserRepository repository = new UserRepository();
