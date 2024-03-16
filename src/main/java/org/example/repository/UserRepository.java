@@ -5,6 +5,8 @@ import org.example.models.UserModel;
 import java.sql.*;
 
 public class UserRepository {
+    private final ConnectionManager connectionManager = new ConnectionManager();
+
     public UserRepository(){}
 
     public UserModel getUserByLogin(String login) {
@@ -14,20 +16,16 @@ public class UserRepository {
                        JOIN emails on emails.login = users.login
                        WHERE users.login=
                        '""" + login  + "'";
-
-        try(ConnectionManager connectionManager = new ConnectionManager();
-            Connection connection = connectionManager.getConnection()) {
+        try(Connection connection = connectionManager.getConnection()) {
             try {
-                Statement statement = connection.createStatement();
-                try (ResultSet result = statement.executeQuery(query)) {
+                try (Statement statement = connection.createStatement();
+                     ResultSet result = statement.executeQuery(query)) {
                     if (result.next()) {
                         return new UserModel(result.getString("login"),
                                 result.getString("password"),
                                 result.getDate("date"),
                                 result.getString("email"));
                     }
-                } finally {
-                    statement.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -45,8 +43,8 @@ public class UserRepository {
                             INSERT INTO emails(login, email)
                             VALUES(?, ?);
                             """;
-        try(ConnectionManager connectionManager = new ConnectionManager();
-            Connection connection = connectionManager.getConnection()) {
+
+        try(Connection connection = connectionManager.getConnection()) {
             try (PreparedStatement usersStatement = connection.prepareStatement(usersQuery)) {
                 usersStatement.setString(1, user.getLogin());
                 usersStatement.setString(2, user.getPassword());
@@ -65,7 +63,7 @@ public class UserRepository {
 
 
 class ConnectionManager implements AutoCloseable {
-    private final String URL = "jdbc:postgresql://10.0.2.2:5432/prometheus";
+    private final String URL = "jdbc:postgresql://localhost:5432/prometheus"; // 10.0.2.2
     private final String username = "postgres";
     private final String password = "mizazir";
 
